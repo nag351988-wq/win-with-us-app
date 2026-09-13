@@ -1,0 +1,12 @@
+{
+  "Percentages": [
+    {
+      "id": 1,
+      "difficulty": "Moderate",
+      "stem": "If 20% of a number is 120, find 40% of that number.",
+      "options": ["(A) 200", "(B) 240", "(C) 300", "(D) 320"],
+      "correct": "(B)",
+      "youtube_url": "https://youtu.be/YOUR_VIDEO_ID_HERE"
+    }
+  ]
+}

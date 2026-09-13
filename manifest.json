@@ -1,0 +1,15 @@
+{
+  "name": "Win With Us",
+  "short_name": "WinWithUs",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#f59e0b",
+  "icons": [
+    {
+      "src": "https://img.icons8.com/color/512/student-helmet.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
