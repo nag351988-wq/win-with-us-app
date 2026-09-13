@@ -1,6 +1,7 @@
 {
   "name": "Win With Us",
   "short_name": "WinWithUs",
+  "description": "Maths Tricks & Logics and Aptitude Practice Portal for Competitive Exams",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0b0f19",
