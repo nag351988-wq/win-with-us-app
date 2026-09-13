@@ -9,7 +9,7 @@
     {
       "src": "https://raw.githubusercontent.com/nag351988-wq/win-with-us-app/main/icon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]
