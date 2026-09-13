@@ -1,16 +1,15 @@
 {
-  "name": "Win With Us",
-  "short_name": "WinWithUs",
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#0b0f19",
-  "theme_color": "#f59e0b",
+  "short_name": "Streamlit",
+  "name": "Streamlit",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/nag351988-wq/win-with-us-app/main/icon.png",
-      "sizes": "512x512",
+      "src": "favicon_512.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
 }
