@@ -2,7 +2,7 @@
   "name": "Win With Us",
   "short_name": "WinWithUs",
   "description": "Maths Tricks & Logics and Aptitude Practice Portal for Competitive Exams",
-  "start_url": "/",
+  "start_url": "https://winwithus-exams.streamlit.app/",
   "display": "standalone",
   "background_color": "#0b0f19",
   "theme_color": "#f59e0b",
