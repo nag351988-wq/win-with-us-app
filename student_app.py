@@ -9,7 +9,17 @@ st.set_page_config(
     layout="centered",
     initial_sidebar_state="collapsed",
 )
-
+# Hide the GitHub icon, footer, and Streamlit menu
+hide_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    .viewerBadge_container__1QSob {display: none !important;}
+    .styles_viewerBadge__1yB5_ {display: none !important;}
+    [data-testid="stViewerBadge"] {display: none !important;}
+    </style>
+"""
+st.markdown(hide_style, unsafe_allow_html=True)
 # 2. Data Management Functions
 DATA_FILE = "questions.json"
 
