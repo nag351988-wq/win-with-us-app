@@ -1,131 +1,156 @@
-import streamlit as st
 import json
 import os
+import streamlit as st
 
+# 1. Page Configuration
 st.set_page_config(
     page_title="Win With Us",
-    page_icon="🎯",
+    page_icon="🏆",
     layout="centered",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="collapsed",
 )
 
-# Inject PWA Manifest, Favicon, and Icon directly into Streamlit's HTML head
-st.markdown("""
-<link rel="manifest" href="https://raw.githubusercontent.com/nag351988-wq/win-with-us-app/main/manifest.json">
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/nag351988-wq/win-with-us-app/main/icon.png">
-<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/nag351988-wq/win-with-us-app/main/icon.png">
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif !important;
-        background-color: #0b0f19 !important;
-        color: #f8fafc !important;
-    }
-    .stApp {
-        background-color: #0b0f19 !important;
-    }
-    .brand-header {
-        text-align: center;
-        padding: 10px 0 20px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        margin-bottom: 20px;
-    }
-    .brand-title {
-        font-size: 26px;
-        font-weight: 900;
-        background: linear-gradient(90deg, #fbbf24 0%, #f59e0b 50%, #f43f5e 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-transform: uppercase;
-    }
-    .brand-sub {
-        color: #94a3b8;
-        font-size: 13px;
-        font-weight: 600;
-    }
-    .question-card {
-        background-color: #131c2e;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        padding: 18px;
-        margin-bottom: 16px;
-    }
-</style>
-""", unsafe_allow_html=True)
+# 2. Hide Streamlit Branding, Footers, and Header Menu
+hide_streamlit_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# App Header
-st.markdown("""
-<div class="brand-header">
-    <div class="brand-title">🏆 Win With Us</div>
-    <div class="brand-sub">Maths Tricks & Logics | Aptitude Practice Portal</div>
-</div>
-""", unsafe_allow_html=True)
+# 3. Data Management Functions
+DATA_FILE = "questions.json"
 
-# Load JSON Data Safely
-@st.cache_data
-def load_data():
-    if os.path.exists("questions.json"):
-        with open("questions.json", "r", encoding="utf-8") as f:
-            return json.load(f)
-    return {"Percentages": [{"id": 1, "difficulty": "Moderate", "stem": "Sample: If 20% of a number is 120, find 40%.", "options": ["(A) 200", "(B) 240", "(C) 300", "(D) 320"], "correct": "(B)", "youtube_url": "https://youtube.com"}]}
 
-data = load_data()
+def load_questions():
+  if os.path.exists(DATA_FILE):
+    try:
+      with open(DATA_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+    except Exception:
+      return {}
+  return {}
 
-# Topic Selector Dropdown
-topic_list = list(data.keys())
-selected_topic = st.selectbox("📂 Select Topic / Chapter:", topic_list)
 
-st.divider()
+def append_question_to_json(
+    chapter_name,
+    stem,
+    options,
+    correct_option,
+    youtube_link,
+    difficulty="Moderate",
+):
+  data = load_questions()
 
-# Render Questions
-questions = data.get(selected_topic, [])
-st.markdown(f"### 📚 Practice: {selected_topic} ({len(questions)} Questions)")
+  if chapter_name not in data:
+    data[chapter_name] = []
 
-for idx, q in enumerate(questions):
-    star_map = {"Easy": "⭐", "Moderate": "⭐⭐", "Difficult": "⭐⭐⭐"}
-    stars = star_map.get(q.get("difficulty", "Moderate"), "⭐⭐")
-    
-    with st.container():
-        st.markdown(f"""
-        <div class="question-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-weight: 800; color: #38bdf8;">Q{idx+1})</span>
-                <span style="font-size: 14px;">{stars}</span>
-            </div>
-            <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 12px;">
-                {q['stem']}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        user_choice = st.radio(
-            f"Select option for Q{idx+1}:", 
-            q["options"], 
-            key=f"q_{idx}", 
-            label_visibility="collapsed"
+  existing_ids = [q.get("id", 0) for q in data[chapter_name]]
+  next_id = max(existing_ids) + 1 if existing_ids else 1
+
+  new_question = {
+      "id": next_id,
+      "difficulty": difficulty,
+      "stem": stem,
+      "options": options,
+      "correct": correct_option.strip(),
+      "youtube_url": youtube_link.strip(),
+  }
+
+  data[chapter_name].append(new_question)
+
+  with open(DATA_FILE, "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=4, ensure_ascii=False)
+
+  return next_id
+
+
+# 4. Load Question Bank
+data = load_questions()
+
+st.title("🏆 Win With Us")
+st.subheader("Maths Tricks & Logics and Aptitude Practice Portal")
+st.markdown("---")
+
+if not data:
+  st.warning(
+      "No questions found yet! Open the sidebar Admin Panel to add your first"
+      " chapter and questions."
+  )
+else:
+  # Chapter Selection
+  chapters = list(data.keys())
+  selected_chapter = st.selectbox("📚 Select Chapter / Topic", chapters)
+
+  if selected_chapter and data[selected_chapter]:
+    questions_list = data[selected_chapter]
+
+    st.markdown(
+        f"### Practice: {selected_chapter} ({len(questions_list)} Questions)"
+    )
+
+    # Render Question Cards
+    for idx, q in enumerate(questions_list):
+      with st.container():
+        st.markdown(
+            f"**Q{idx+1}) [{q.get('difficulty', 'Moderate')}]** {q['stem']}"
         )
-        
-        col_btn, col_res = st.columns([1, 2])
-        with col_btn:
-            check_clicked = st.button("Check Answer", key=f"btn_{idx}")
-            
-        if check_clicked:
-            clean_user = user_choice.split()[0]
-            clean_correct = q["correct"].strip()
-            
-            if clean_user == clean_correct:
-                st.success("🟢 Correct! Excellent calculation.")
-            else:
-                st.error(f"🔴 Incorrect. The correct answer is **{q['correct']}**.")
-                
-            if q.get("youtube_url"):
-                st.markdown(f"""
-                <div style="margin-top: 10px;">
-                    <a href="{q['youtube_url']}" target="_blank" style="display: inline-block; background: #dc2626; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 700; text-decoration: none; font-size: 13px;">
-                        📺 Watch Detailed Solution on YouTube
-                    </a>
-                </div>
-                """, unsafe_allow_html=True)
-                
-        st.write("")
-        st.divider()
+
+        user_choice = st.radio(
+            "Choose option:", q["options"], key=f"q_{selected_chapter}_{q['id']}"
+        )
+
+        if st.button("Check Answer", key=f"btn_{selected_chapter}_{q['id']}"):
+          if user_choice.startswith(q["correct"]):
+            st.success("✅ Correct! Great logic.")
+          else:
+            st.error(f"❌ Incorrect. The correct answer is {q['correct']}")
+
+          if q.get("youtube_url"):
+            st.markdown(
+                f"💡 [Watch Video Explanation & Shortcut]"
+                f"({q['youtube_url']})"
+            )
+        st.markdown("---")
+
+# 5. Secure Admin Panel (Sidebar)
+with st.sidebar.expander("🛠️ Admin: Add Question"):
+  admin_pass = st.text_input("Admin Passcode", type="password")
+  if admin_pass == "1234":  # Change this PIN to any secret code you prefer
+    existing_topics = list(data.keys()) if data else []
+    target_topic = st.selectbox(
+        "Target Chapter", existing_topics + ["➕ Add New Chapter"]
+    )
+
+    if target_topic == "➕ Add New Chapter":
+      target_topic = st.text_input("New Chapter Name")
+
+    new_stem = st.text_area("Question Stem / Text")
+    diff = st.selectbox("Difficulty", ["Easy", "Moderate", "Difficult"])
+
+    opt_a = st.text_input("Option A", value="(A) ")
+    opt_b = st.text_input("Option B", value="(B) ")
+    opt_c = st.text_input("Option C", value="(C) ")
+    opt_d = st.text_input("Option D", value="(D) ")
+
+    correct_ans = st.selectbox(
+        "Correct Option Prefix", ["(A)", "(B)", "(C)", "(D)"]
+    )
+    yt_url = st.text_input("YouTube Solution URL")
+
+    if st.button("Save & Append Question"):
+      if target_topic and new_stem:
+        options_list = [opt_a, opt_b, opt_c, opt_d]
+        new_id = append_question_to_json(
+            target_topic, new_stem, options_list, correct_ans, yt_url, diff
+        )
+        st.success(
+            f"Successfully added Q{new_id} to {target_topic}! Refresh page to"
+            " view."
+        )
+      else:
+        st.error("Please provide a chapter name and question text.")
+  elif admin_pass:
+    st.error("Incorrect Passcode")
