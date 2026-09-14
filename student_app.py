@@ -10,12 +10,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Hide Streamlit Branding, Footers, and Header Menu
+# 2. Enhanced CSS to completely hide Streamlit headers, footers, toolbars, and branding
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    [data-testid="stHeader"] {visibility: hidden; display: none;}
+    [data-testid="stFooter"] {visibility: hidden; display: none;}
+    [data-testid="stToolbar"] {visibility: hidden; display: none;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -118,7 +121,7 @@ else:
 # 5. Secure Admin Panel (Sidebar)
 with st.sidebar.expander("🛠️ Admin: Add Question"):
   admin_pass = st.text_input("Admin Passcode", type="password")
-  if admin_pass == "1234":  # Change this PIN to any secret code you prefer
+  if admin_pass == "1234":  # Change to your preferred passcode
     existing_topics = list(data.keys()) if data else []
     target_topic = st.selectbox(
         "Target Chapter", existing_topics + ["➕ Add New Chapter"]
