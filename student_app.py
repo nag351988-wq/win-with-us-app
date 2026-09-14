@@ -10,15 +10,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Enhanced CSS to completely hide Streamlit headers, footers, toolbars, and branding
+# 2. Corrected CSS: Hides only the footer/branding while keeping the header and theme switcher intact
 hide_streamlit_style = """
     <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    [data-testid="stHeader"] {visibility: hidden; display: none;}
+    footer {visibility: hidden; display: none;}
     [data-testid="stFooter"] {visibility: hidden; display: none;}
-    [data-testid="stToolbar"] {visibility: hidden; display: none;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
