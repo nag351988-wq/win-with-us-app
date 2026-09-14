@@ -108,7 +108,7 @@ else:
 # 4. Secure Admin Panel (Sidebar)
 with st.sidebar.expander("🛠️ Admin: Add Question"):
   admin_pass = st.text_input("Admin Passcode", type="password")
-  if admin_pass == "1234":  # Change to your preferred passcode
+  if admin_pass == "3588":  # Change to your preferred passcode
     existing_topics = list(data.keys()) if data else []
     target_topic = st.selectbox(
         "Target Chapter", existing_topics + ["➕ Add New Chapter"]
