@@ -1,6 +1,7 @@
 import json
 import os
 import streamlit as st
+from streamlit.components.v1 import html
 
 # 1. Page Configuration
 st.set_page_config(
@@ -10,18 +11,26 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Aggressive CSS to hide headers, toolbars, and footers completely
-hide_streamlit_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    [data-testid="stHeader"] {visibility: hidden; display: none;}
-    [data-testid="stFooter"] {visibility: hidden; display: none;}
-    [data-testid="stToolbar"] {visibility: hidden; display: none;}
-    </style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+# 2. Advanced JavaScript Injection to aggressively remove cloud hosting badges
+html(
+    """
+    <script>
+    const hideBadge = () => {
+        const elements = window.top.document.querySelectorAll('[href*="streamlit.io"]');
+        elements.forEach(el => {
+            let parent = el.closest('div');
+            if (parent) {
+                parent.style.display = 'none';
+            } else {
+                el.style.display = 'none';
+            }
+        });
+    };
+    setInterval(hideBadge, 300);
+    </script>
+""",
+    height=0,
+)
 
 # 3. Data Management Functions
 DATA_FILE = "questions.json"
