@@ -1,7 +1,6 @@
 import json
 import os
 import streamlit as st
-from streamlit.components.v1 import html
 
 # 1. Page Configuration
 st.set_page_config(
@@ -11,28 +10,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# 2. Advanced JavaScript Injection to aggressively remove cloud hosting badges
-html(
-    """
-    <script>
-    const hideBadge = () => {
-        const elements = window.top.document.querySelectorAll('[href*="streamlit.io"]');
-        elements.forEach(el => {
-            let parent = el.closest('div');
-            if (parent) {
-                parent.style.display = 'none';
-            } else {
-                el.style.display = 'none';
-            }
-        });
-    };
-    setInterval(hideBadge, 300);
-    </script>
-""",
-    height=0,
-)
-
-# 3. Data Management Functions
+# 2. Data Management Functions
 DATA_FILE = "questions.json"
 
 
@@ -79,7 +57,7 @@ def append_question_to_json(
   return next_id
 
 
-# 4. Load Question Bank
+# 3. Load Question Bank
 data = load_questions()
 
 st.title("🏆 Win With Us")
@@ -127,7 +105,7 @@ else:
             )
         st.markdown("---")
 
-# 5. Secure Admin Panel (Sidebar)
+# 4. Secure Admin Panel (Sidebar)
 with st.sidebar.expander("🛠️ Admin: Add Question"):
   admin_pass = st.text_input("Admin Passcode", type="password")
   if admin_pass == "1234":  # Change to your preferred passcode
